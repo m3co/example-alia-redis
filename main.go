@@ -4,45 +4,26 @@ import (
 	"bufio"
 	"log"
 	"net"
+
+	"./aliaredis"
 )
 
-type transportAdapter struct {
-	Listen func(network, address string) (net.Listener, error)
-}
-
-type aliaRedis struct {
-	addr      string
-	listener  net.Listener
-	transport transportAdapter
-}
-
-// Serve - serves at addr
-func (s *aliaRedis) Serve(addr string) error {
-	s.addr = addr
-	listener, err := s.transport.Listen("tcp", s.addr)
-	if err != nil {
-		return err
-	}
-	s.listener = listener
-	return nil
-}
-
 func main() {
-	s := aliaRedis{}
+	s := aliaredis.Server{}
 
 	// setup
-	s.transport.Listen = net.Listen
+	s.Listen = net.Listen
 
 	if err := s.Serve(":3000"); err != nil {
 		log.Fatalln(err)
 	}
-	defer s.listener.Close()
+	defer s.Listener.Close()
 
-	log.Printf("s is running on %s\n", s.addr)
+	log.Printf("s is running on %s\n", s.Addr)
 
 	for {
 		log.Println("accepting connections")
-		conn, err := s.listener.Accept()
+		conn, err := s.Listener.Accept()
 		log.Println("accepted")
 		if err != nil {
 			log.Fatalln(err)

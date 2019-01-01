@@ -1,4 +1,4 @@
-package main
+package aliaredis
 
 import (
 	"net"
@@ -8,10 +8,10 @@ import (
 func Test_Serve_redefine_Listen(t *testing.T) {
 
 	// setup
-	s := aliaRedis{}
+	s := Server{}
 	ListenCalled := false
 
-	s.transport.Listen = func(_, _ string) (net.Listener, error) {
+	s.Listen = func(_, _ string) (net.Listener, error) {
 		ListenCalled = true
 		return nil, nil
 	}
