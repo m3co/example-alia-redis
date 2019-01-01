@@ -14,7 +14,7 @@ func main() {
 	// setup
 	s.Listen = net.Listen
 
-	if err := s.Serve(":3000"); err != nil {
+	if err := s.Start(":3000"); err != nil {
 		log.Fatalln(err)
 	}
 	defer s.Listener.Close()

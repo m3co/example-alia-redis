@@ -17,7 +17,7 @@ func Test_Serve_redefine_Listen(t *testing.T) {
 	}
 
 	// excercise
-	s.Serve("")
+	s.Start("")
 
 	// verify
 	if !ListenCalled {
