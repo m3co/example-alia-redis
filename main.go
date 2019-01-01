@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"log"
 	"net"
 
@@ -30,20 +29,7 @@ func main() {
 		}
 
 		log.Println("going goroutine")
-		go (func() {
-			defer (func() {
-				log.Println("closing connection")
-				conn.Close()
-			})()
-			log.Println("scanning")
-			scanner := bufio.NewScanner(conn)
-			log.Println("scanned")
-			for scanner.Scan() {
-				log.Println("reading")
-				text := scanner.Text()
-				log.Println("read", text)
-			}
-			log.Println("finished goroutine")
-		})()
+
+		go s.Handle(conn)
 	}
 }
