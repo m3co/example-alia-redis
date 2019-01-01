@@ -2,9 +2,13 @@ package aliaredis
 
 import "net"
 
+// ERRLISTENERISNIL whatever
+var ERRLISTENERISNIL = "nil listener"
+
 // Server server struct
 type Server struct {
-	Addr     string
-	Listener net.Listener
-	Listen   func(network, address string) (net.Listener, error)
+	Addr   func() net.Addr
+	Close  func() error
+	Accept func() (net.Conn, error)
+	Listen func(network, address string) (net.Listener, error)
 }

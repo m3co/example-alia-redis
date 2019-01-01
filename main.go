@@ -17,13 +17,13 @@ func main() {
 	if err := s.Start(":3000"); err != nil {
 		log.Fatalln(err)
 	}
-	defer s.Listener.Close()
+	defer s.Close()
 
-	log.Printf("s is running on %s\n", s.Addr)
+	log.Printf("s is running on %s\n", s.Addr())
 
 	for {
 		log.Println("accepting connections")
-		conn, err := s.Listener.Accept()
+		conn, err := s.Accept()
 		log.Println("accepted")
 		if err != nil {
 			log.Fatalln(err)
