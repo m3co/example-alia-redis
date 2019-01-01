@@ -6,22 +6,43 @@ import (
 	"net"
 )
 
-func main() {
-	addr := ":3000"
-	listener, err := net.Listen("tcp", addr)
+type transportAdapter struct {
+	Listen func(network, address string) (net.Listener, error)
+}
+
+type aliaRedis struct {
+	addr      string
+	listener  net.Listener
+	transport transportAdapter
+}
+
+// Serve - serves at addr
+func (s *aliaRedis) Serve(addr string) error {
+	s.addr = addr
+	listener, err := s.transport.Listen("tcp", s.addr)
 	if err != nil {
+		return err
+	}
+	s.listener = listener
+	return nil
+}
+
+func main() {
+	s := aliaRedis{}
+
+	// setup
+	s.transport.Listen = net.Listen
+
+	if err := s.Serve(":3000"); err != nil {
 		log.Fatalln(err)
 	}
-	defer (func() {
-		log.Println("closing listener")
-		listener.Close()
-	})()
+	defer s.listener.Close()
 
-	log.Printf("Server is running on %s\n", addr)
+	log.Printf("s is running on %s\n", s.addr)
 
 	for {
 		log.Println("accepting connections")
-		conn, err := listener.Accept()
+		conn, err := s.listener.Accept()
 		log.Println("accepted")
 		if err != nil {
 			log.Fatalln(err)
