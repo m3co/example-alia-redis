@@ -25,8 +25,8 @@ func Test_Serve_Start_normally(t *testing.T) {
 	if !ListenCalled {
 		t.Error("can't call Listen function")
 	}
-	if fmt.Sprint(err) != ERRLISTENERISNIL {
-		t.Error("Expecting ERRLISTENERISNIL")
+	if fmt.Sprint(err) != errListenerIsNil {
+		t.Error("Expecting errListenerIsNil")
 	}
 }
 
