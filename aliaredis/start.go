@@ -2,11 +2,16 @@ package aliaredis
 
 import (
 	"errors"
+	"net"
 	"regexp"
 )
 
 func (s *Server) init() {
 	s.process = process
+	if s.Listen == nil {
+		s.Listen = net.Listen
+	}
+
 	s.reSet = regexp.MustCompile("^(?i)set ([a-z0-9-]+)(?-i) (.*)")
 	s.reGet = regexp.MustCompile("^(?i)get ([a-z0-9-]+)(?-i)")
 	s.reDel = regexp.MustCompile("^(?i)del ([0-9a-z ]+)(?-i)")
@@ -15,9 +20,6 @@ func (s *Server) init() {
 // Start - start the server at addr
 func (s *Server) Start(addr string) error {
 	s.init()
-	if s.Listen == nil {
-		return errors.New(errListenerIsNil)
-	}
 	listener, err := s.Listen("tcp", addr)
 	if err != nil {
 		return err

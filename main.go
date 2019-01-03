@@ -2,16 +2,12 @@ package main
 
 import (
 	"log"
-	"net"
 
 	"./aliaredis"
 )
 
 func main() {
 	s := aliaredis.Server{}
-
-	// setup
-	s.Listen = net.Listen
 
 	if err := s.Start(":3000"); err != nil {
 		log.Fatalln(err)
