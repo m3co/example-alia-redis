@@ -1,6 +1,7 @@
 package aliaredis
 
 import (
+	"log"
 	"net"
 	"regexp"
 )
@@ -29,4 +30,26 @@ func (s *Server) Start(addr string) error {
 	s.Addr = listener.Addr
 
 	return nil
+}
+
+// ListenAndServe whatever
+func (s *Server) ListenAndServe(addr string) error {
+	addrInternal := ":3000"
+	if addr != "" {
+		addrInternal = addr
+	}
+	if err := s.Start(addrInternal); err != nil {
+		return err
+	}
+	defer s.Close()
+
+	log.Printf("server is running on %s\n", s.Addr())
+
+	for {
+		conn, err := s.Accept()
+		if err != nil {
+			return err
+		}
+		go s.Handle(conn)
+	}
 }
