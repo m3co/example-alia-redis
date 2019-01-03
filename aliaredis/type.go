@@ -3,6 +3,7 @@ package aliaredis
 import (
 	"net"
 	"regexp"
+	"sync"
 )
 
 var errListenerIsNil = "nil listener"
@@ -17,7 +18,7 @@ type Server struct {
 	Listen  func(network, address string) (net.Listener, error)
 	process func(s *Server, message string) error // oh hell no!
 
-	store map[string]string
+	store sync.Map
 	reSet *regexp.Regexp
 	reGet *regexp.Regexp
 	reDel *regexp.Regexp
