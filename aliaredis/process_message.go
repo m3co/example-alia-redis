@@ -5,16 +5,21 @@ import (
 )
 
 // process - handle an incomming connection
-func process(s *Server, message string) (string, error) {
+func process(s *Server, message string) (*response, error) {
 	if message == "" {
-		return "", errors.New(errMessageInProcessIsNil)
+		return nil, errors.New(errMessageInProcessIsNil)
 	}
 	if s.reSet.MatchString(message) {
 		match := s.reSet.FindStringSubmatch(message)
 		key := match[2]
 		value := match[3]
 		s.set(key, value)
-		return "", nil
+		return nil, nil
 	}
-	return "", errors.New(errMessageInProcessNotMatched)
+	if s.reGet.MatchString(message) {
+		match := s.reGet.FindStringSubmatch(message)
+		key := match[2]
+		return s.get(key), nil
+	}
+	return nil, errors.New(errMessageInProcessNotMatched)
 }

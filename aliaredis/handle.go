@@ -13,12 +13,11 @@ func (s *Server) Handle(conn net.Conn) error {
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		message := scanner.Text()
-		if response, err := s.process(s, message); err != nil {
-			if response != "" {
-				log.Println("response:", response)
-			}
+		response, err := s.process(s, message)
+		if err != nil {
 			return err
 		}
+		log.Println("response:", response)
 	}
 	return nil
 }
