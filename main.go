@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"./aliaredis"
+	"github.com/rianby64/example-alia-redis/aliaredis"
 )
 
 func main() {
