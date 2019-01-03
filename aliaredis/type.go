@@ -11,8 +11,7 @@ var errMessageInProcessIsNil = "message is empty"
 var errMessageInProcessNotMatched = "invalid message"
 
 type response struct {
-	value string
-	ok    bool
+	value *string
 }
 
 // Server server struct

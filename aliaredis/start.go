@@ -7,9 +7,9 @@ import (
 
 func (s *Server) init() {
 	s.process = process
-	s.reSet = regexp.MustCompile("^(?i)(set) ([a-z0-9-]+)(?-i) (.*)")
-	s.reGet = regexp.MustCompile("^(?i)(get) ([a-z0-9-]+)(?-i)")
-	s.reDel = regexp.MustCompile("^(?i)(del) ([a-z0-9-]+)(?-i)")
+	s.reSet = regexp.MustCompile("^(?i)set ([a-z0-9-]+)(?-i) (.*)")
+	s.reGet = regexp.MustCompile("^(?i)get ([a-z0-9-]+)(?-i)")
+	s.reDel = regexp.MustCompile("^(?i)del ([a-z0-9-]+)(?-i)")
 }
 
 // Start - start the server at addr

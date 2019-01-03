@@ -11,13 +11,13 @@ func process(s *Server, message string) (*response, error) {
 	}
 	if s.reSet.MatchString(message) {
 		match := s.reSet.FindStringSubmatch(message)
-		key := match[2]
-		value := match[3]
+		key := match[1]
+		value := match[2]
 		return s.set(key, value), nil
 	}
 	if s.reGet.MatchString(message) {
 		match := s.reGet.FindStringSubmatch(message)
-		key := match[2]
+		key := match[1]
 		return s.get(key), nil
 	}
 	return nil, errors.New(errMessageInProcessNotMatched)

@@ -14,11 +14,8 @@ func Test_Commands_message_set(t *testing.T) {
 	if res == nil {
 		t.Error("awaiting for a response")
 	}
-	if res.value != "OK" {
+	if *res.value != "OK" {
 		t.Error("expecting to see OK as result")
-	}
-	if !res.ok {
-		t.Error("expecting to see ok as true")
 	}
 
 	var key interface{} = "key"
@@ -47,11 +44,8 @@ func Test_Commands_message_get_OK(t *testing.T) {
 	if res == nil {
 		t.Error("awaiting for a response")
 	}
-	if res.value != "value" {
+	if *res.value != "value" {
 		t.Error("expecting to see OK as result")
-	}
-	if !res.ok {
-		t.Error("expecting to see ok as true")
 	}
 
 	var key interface{} = "key"
@@ -79,11 +73,8 @@ func Test_Commands_message_get_Error(t *testing.T) {
 	if res == nil {
 		t.Error("awaiting for a response")
 	}
-	if res.value != "" {
-		t.Error("expecting to see '' as result")
-	}
-	if res.ok {
-		t.Error("expecting to see ok as false")
+	if res.value != nil {
+		t.Error("expecting to see '' as result", res)
 	}
 	if err != nil {
 		t.Error("unexpected error", err)
