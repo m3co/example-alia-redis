@@ -7,6 +7,7 @@ import (
 
 var errListenerIsNil = "nil listener"
 var errMessageInProcessIsNil = "message is empty"
+var errMessageInProcessNotMatched = "invalid message"
 
 // Server server struct
 type Server struct {
