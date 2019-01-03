@@ -23,7 +23,7 @@ func (s *Server) Handle(conn net.Conn) error {
 			log.Printf("nil")
 		} else {
 			if (*response).value == nil {
-				log.Println("nil")
+				conn.Write([]byte("nil"))
 			} else {
 				conn.Write([]byte(fmt.Sprintf("%q", *response.value)))
 			}

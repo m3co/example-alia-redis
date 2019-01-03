@@ -19,6 +19,9 @@ func (d dummyTestHandleConn) Read(s []byte) (int, error) {
 	n := copy(s, expectedMessageTestHandle)
 	return n, io.EOF
 }
+func (d dummyTestHandleConn) Write(s []byte) (int, error) {
+	return 0, nil
+}
 func (d dummyTestHandleConn) Close() error {
 	return nil
 }
@@ -148,6 +151,45 @@ func Test_Handle_Command_set(t *testing.T) {
 	}
 	if fmt.Sprintf("%q", actualValue) != fmt.Sprintf(
 		"%q", expectedValueToStoreTestHandleCommandSet) {
+		t.Error("expected value differs from actual value")
+	}
+}
+
+// Test_Handle_Command_get_nonexisting_key
+var actualMessageTestHandleCommandGetNonexistingKey = ""
+
+type dummyTestHandleCommandGetNonexistingKeyConn struct {
+	net.Conn
+}
+
+func (d dummyTestHandleCommandGetNonexistingKeyConn) Read(s []byte) (int, error) {
+	n := copy(s, "get key")
+	return n, io.EOF
+}
+
+func (d dummyTestHandleCommandGetNonexistingKeyConn) Write(s []byte) (int, error) {
+	actualMessageTestHandleCommandGetNonexistingKey = fmt.Sprintf("%s", s)
+	return 0, nil
+}
+
+func (d dummyTestHandleCommandGetNonexistingKeyConn) Close() error {
+	return nil
+}
+
+func Test_Handle_Command_get_nonexisting_key(t *testing.T) {
+
+	// setup
+	s := Server{}
+	expectedValue := "nil"
+	s.init()
+
+	conn := dummyTestHandleCommandGetNonexistingKeyConn{}
+	err := s.Handle(conn)
+
+	if err != nil {
+		t.Error("unexpected error")
+	}
+	if actualMessageTestHandleCommandGetNonexistingKey != expectedValue {
 		t.Error("expected value differs from actual value")
 	}
 }
