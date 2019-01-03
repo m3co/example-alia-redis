@@ -70,6 +70,10 @@ func Test_Handle_Process_returns_error(t *testing.T) {
 		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
 			t.Error("Handle is not calling Process method")
 		}
+		if actualMessageTestHandle != fmt.Sprintf(
+			"%s, closing...", fmt.Sprint(expectedError)) {
+			t.Error("Actual error message differs from expected")
+		}
 	} else {
 		t.Error("unexpected normal execution")
 	}
