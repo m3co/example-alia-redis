@@ -10,6 +10,7 @@ import (
 
 // TestHandle_normally
 var expectedMessageTestHandle = "message"
+var actualMessageTestHandle = ""
 
 type dummyTestHandleConn struct {
 	net.Conn
@@ -18,6 +19,10 @@ type dummyTestHandleConn struct {
 func (d dummyTestHandleConn) Read(s []byte) (int, error) {
 	n := copy(s, expectedMessageTestHandle)
 	return n, io.EOF
+}
+func (d dummyTestHandleConn) Write(s []byte) (int, error) {
+	actualMessageTestHandle = fmt.Sprintf("%s", s)
+	return 0, nil
 }
 func (d dummyTestHandleConn) Close() error {
 	return nil
@@ -43,6 +48,9 @@ func Test_Handle_normally(t *testing.T) {
 	if actualMessage != expectedMessageTestHandle {
 		t.Error("Handle is not calling Process method")
 	}
+	if actualMessageTestHandle != "nil" {
+		t.Error("unexpected error")
+	}
 }
 
 func Test_Handle_Process_returns_error(t *testing.T) {
@@ -61,6 +69,10 @@ func Test_Handle_Process_returns_error(t *testing.T) {
 	if err != nil {
 		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
 			t.Error("Handle is not calling Process method")
+		}
+		if actualMessageTestHandle != fmt.Sprintf(
+			"%s, closing...", fmt.Sprint(expectedError)) {
+			t.Error("Actual error message differs from expected")
 		}
 	} else {
 		t.Error("unexpected normal execution")
@@ -148,6 +160,45 @@ func Test_Handle_Command_set(t *testing.T) {
 	}
 	if fmt.Sprintf("%q", actualValue) != fmt.Sprintf(
 		"%q", expectedValueToStoreTestHandleCommandSet) {
+		t.Error("expected value differs from actual value")
+	}
+}
+
+// Test_Handle_Command_get_nonexisting_key
+var actualMessageTestHandleCommandGetNonexistingKey = ""
+
+type dummyTestHandleCommandGetNonexistingKeyConn struct {
+	net.Conn
+}
+
+func (d dummyTestHandleCommandGetNonexistingKeyConn) Read(s []byte) (int, error) {
+	n := copy(s, "get key")
+	return n, io.EOF
+}
+
+func (d dummyTestHandleCommandGetNonexistingKeyConn) Write(s []byte) (int, error) {
+	actualMessageTestHandleCommandGetNonexistingKey = fmt.Sprintf("%s", s)
+	return 0, nil
+}
+
+func (d dummyTestHandleCommandGetNonexistingKeyConn) Close() error {
+	return nil
+}
+
+func Test_Handle_Command_get_nonexisting_key(t *testing.T) {
+
+	// setup
+	s := Server{}
+	expectedValue := "nil"
+	s.init()
+
+	conn := dummyTestHandleCommandGetNonexistingKeyConn{}
+	err := s.Handle(conn)
+
+	if err != nil {
+		t.Error("unexpected error")
+	}
+	if actualMessageTestHandleCommandGetNonexistingKey != expectedValue {
 		t.Error("expected value differs from actual value")
 	}
 }

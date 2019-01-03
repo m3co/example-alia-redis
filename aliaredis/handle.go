@@ -3,7 +3,6 @@ package aliaredis
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"net"
 )
 
@@ -16,14 +15,14 @@ func (s *Server) Handle(conn net.Conn) error {
 		message := scanner.Text()
 		response, err := s.process(s, message)
 		if err != nil {
-			log.Printf("%s, closing...", err)
+			conn.Write([]byte(fmt.Sprintf("%s, closing...", err)))
 			return err
 		}
 		if response == nil {
-			log.Printf("nil")
+			conn.Write([]byte("nil"))
 		} else {
 			if (*response).value == nil {
-				log.Println("nil")
+				conn.Write([]byte("nil"))
 			} else {
 				conn.Write([]byte(fmt.Sprintf("%q", *response.value)))
 			}
