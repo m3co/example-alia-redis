@@ -1,7 +1,6 @@
 package aliaredis
 
 import (
-	"errors"
 	"net"
 	"regexp"
 )
@@ -25,13 +24,9 @@ func (s *Server) Start(addr string) error {
 		return err
 	}
 
-	if listener != nil {
-		s.Close = listener.Close
-		s.Accept = listener.Accept
-		s.Addr = listener.Addr
-	} else {
-		return errors.New("nil listener")
-	}
+	s.Close = listener.Close
+	s.Accept = listener.Accept
+	s.Addr = listener.Addr
 
 	return nil
 }
