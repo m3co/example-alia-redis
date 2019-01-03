@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"testing"
 )
@@ -82,7 +81,6 @@ func (d dummyTestHandleCommandGetConn) Read(s []byte) (int, error) {
 
 func (d dummyTestHandleCommandGetConn) Write(s []byte) (int, error) {
 	actualMessageTestHandleCommandGet = fmt.Sprintf("%s", s)
-	log.Println(actualMessageTestHandleCommandGet)
 	return 0, nil
 }
 
@@ -105,6 +103,51 @@ func Test_Handle_Command_get(t *testing.T) {
 		t.Error("unexpected error")
 	}
 	if actualMessageTestHandleCommandGet != fmt.Sprintf("%q", expectedValue) {
+		t.Error("expected value differs from actual value")
+	}
+}
+
+// Test_Handle_Command_set
+var actualMessageTestHandleCommandSet = ""
+var expectedValueToStoreTestHandleCommandSet = "value"
+
+type dummyTestHandleCommandSetConn struct {
+	net.Conn
+}
+
+func (d dummyTestHandleCommandSetConn) Read(s []byte) (int, error) {
+	n := copy(s, fmt.Sprintf("set key %s", expectedValueToStoreTestHandleCommandSet))
+	return n, io.EOF
+}
+
+func (d dummyTestHandleCommandSetConn) Write(s []byte) (int, error) {
+	actualMessageTestHandleCommandSet = fmt.Sprintf("%s", s)
+	return 0, nil
+}
+
+func (d dummyTestHandleCommandSetConn) Close() error {
+	return nil
+}
+
+func Test_Handle_Command_set(t *testing.T) {
+
+	// setup
+	s := Server{}
+	s.init()
+
+	conn := dummyTestHandleCommandSetConn{}
+	err := s.Handle(conn)
+
+	actualValue, ok := s.store.Load("key")
+
+	if !ok {
+		t.Error("unexpected error while storing the pair key/value")
+	}
+	if err != nil {
+		t.Error("unexpected error")
+	}
+	if fmt.Sprintf("%q", actualValue) != fmt.Sprintf(
+		"%q", expectedValueToStoreTestHandleCommandSet) {
 		t.Error("expected value differs from actual value")
 	}
 }
