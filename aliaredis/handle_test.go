@@ -10,6 +10,7 @@ import (
 
 // TestHandle_normally
 var expectedMessageTestHandle = "message"
+var actualMessageTestHandle = ""
 
 type dummyTestHandleConn struct {
 	net.Conn
@@ -20,6 +21,7 @@ func (d dummyTestHandleConn) Read(s []byte) (int, error) {
 	return n, io.EOF
 }
 func (d dummyTestHandleConn) Write(s []byte) (int, error) {
+	actualMessageTestHandle = fmt.Sprintf("%s", s)
 	return 0, nil
 }
 func (d dummyTestHandleConn) Close() error {
@@ -45,6 +47,9 @@ func Test_Handle_normally(t *testing.T) {
 	}
 	if actualMessage != expectedMessageTestHandle {
 		t.Error("Handle is not calling Process method")
+	}
+	if actualMessageTestHandle != "nil" {
+		t.Error("unexpected error")
 	}
 }
 
