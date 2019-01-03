@@ -2,6 +2,7 @@ package aliaredis
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"net"
 )
@@ -24,7 +25,7 @@ func (s *Server) Handle(conn net.Conn) error {
 			if (*response).value == nil {
 				log.Println("nil")
 			} else {
-				log.Printf("%q", *response.value)
+				conn.Write([]byte(fmt.Sprintf("%q", *response.value)))
 			}
 		}
 	}
