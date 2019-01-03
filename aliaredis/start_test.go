@@ -30,6 +30,20 @@ func Test_Serve_Start_normally(t *testing.T) {
 	}
 }
 
+func Test_Serve_Start_without_Listen(t *testing.T) {
+
+	// setup
+	s := Server{}
+
+	// excercise
+	err := s.Start("")
+
+	// verify
+	if fmt.Sprint(err) != errListenerIsNil {
+		t.Error("Expecting errListenerIsNil")
+	}
+}
+
 func Test_Serve_Start_with_error(t *testing.T) {
 
 	// setup
