@@ -1,10 +1,20 @@
 package aliaredis
 
-import "errors"
+import (
+	"errors"
+	"regexp"
+)
+
+func (s *Server) init() {
+	s.process = process
+	s.reSet = regexp.MustCompile("^(?i)(set) ([a-z0-9-]+)(?-i) (.*)")
+	s.reGet = regexp.MustCompile("^(?i)(get) ([a-z0-9-]+)(?-i)")
+	s.reDel = regexp.MustCompile("^(?i)(del) ([a-z0-9-]+)(?-i)")
+}
 
 // Start - start the server at addr
 func (s *Server) Start(addr string) error {
-	s.process = process
+	s.init()
 	if s.Listen == nil {
 		return errors.New(errListenerIsNil)
 	}

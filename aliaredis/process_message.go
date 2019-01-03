@@ -10,6 +10,6 @@ func process(s *Server, message string) error {
 	if message == "" {
 		return errors.New(errMessageInProcessIsNil)
 	}
-	log.Println("message", message)
+	log.Println(s.reSet.FindAllString(message, -1))
 	return nil
 }
