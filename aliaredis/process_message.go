@@ -20,5 +20,10 @@ func process(s *Server, message string) (*response, error) {
 		key := match[1]
 		return s.get(key), nil
 	}
+	if s.reDel.MatchString(message) {
+		match := s.reDel.FindStringSubmatch(message)
+		keys := match[1]
+		return s.del(keys), nil
+	}
 	return nil, errors.New(errMessageInProcessNotMatched)
 }

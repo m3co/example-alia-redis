@@ -80,3 +80,25 @@ func Test_Commands_message_get_Error(t *testing.T) {
 		t.Error("unexpected error", err)
 	}
 }
+
+func Test_Commands_message_Delete_OK(t *testing.T) {
+
+	// setup
+	s := Server{}
+	s.init()
+	s.store.Store("key1", "value1")
+	s.store.Store("key2", "value2")
+	s.store.Store("key3", "value3")
+
+	res, err := s.process(&s, "del key1 key2 key3")
+	if res == nil {
+		t.Error("awaiting for a response")
+	}
+	// no matter, after all the client will see an string
+	if *res.value != "3" {
+		t.Error("expecting to see 3 as result")
+	}
+	if err != nil {
+		t.Error("unexpected error", err)
+	}
+}
