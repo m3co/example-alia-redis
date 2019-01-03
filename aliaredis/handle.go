@@ -2,6 +2,7 @@ package aliaredis
 
 import (
 	"bufio"
+	"log"
 	"net"
 )
 
@@ -12,7 +13,10 @@ func (s *Server) Handle(conn net.Conn) error {
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		message := scanner.Text()
-		if err := s.process(s, message); err != nil {
+		if response, err := s.process(s, message); err != nil {
+			if response != "" {
+				log.Println("response:", response)
+			}
 			return err
 		}
 	}

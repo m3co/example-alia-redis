@@ -29,9 +29,9 @@ func Test_Handle_normally(t *testing.T) {
 	s := Server{}
 	actualMessage := ""
 
-	s.process = func(s *Server, message string) error {
+	s.process = func(s *Server, message string) (string, error) {
 		actualMessage = message
-		return nil
+		return "", nil
 	}
 
 	conn := dummyTestHandleConn{}
@@ -51,8 +51,8 @@ func Test_Handle_Process_returns_error(t *testing.T) {
 	s := Server{}
 	expectedError := errors.New("expected error")
 
-	s.process = func(s *Server, message string) error {
-		return expectedError
+	s.process = func(s *Server, message string) (string, error) {
+		return "", expectedError
 	}
 
 	conn := dummyTestHandleConn{}

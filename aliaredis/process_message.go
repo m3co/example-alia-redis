@@ -5,16 +5,16 @@ import (
 )
 
 // process - handle an incomming connection
-func process(s *Server, message string) error {
+func process(s *Server, message string) (string, error) {
 	if message == "" {
-		return errors.New(errMessageInProcessIsNil)
+		return "", errors.New(errMessageInProcessIsNil)
 	}
 	if s.reSet.MatchString(message) {
 		match := s.reSet.FindStringSubmatch(message)
 		key := match[2]
 		value := match[3]
 		s.set(key, value)
-		return nil
+		return "", nil
 	}
-	return errors.New(errMessageInProcessNotMatched)
+	return "", errors.New(errMessageInProcessNotMatched)
 }

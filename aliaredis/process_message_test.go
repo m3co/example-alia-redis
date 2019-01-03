@@ -13,7 +13,7 @@ func Test_Process_empty_message_returns_error(t *testing.T) {
 	s.process = process
 	expectedError := errors.New(errMessageInProcessIsNil)
 
-	err := s.process(&s, "")
+	_, err := s.process(&s, "")
 
 	if err != nil {
 		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
@@ -31,7 +31,7 @@ func Test_Process_message_not_matched_error(t *testing.T) {
 	expectedError := errors.New(errMessageInProcessNotMatched)
 	s.init()
 
-	err := s.process(&s, "whatever")
+	_, err := s.process(&s, "whatever")
 
 	if err != nil {
 		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
@@ -48,7 +48,7 @@ func Test_Process_message_set_OK(t *testing.T) {
 	s := Server{}
 	s.init()
 
-	err := s.process(&s, "set key value")
+	_, err := s.process(&s, "set key value")
 
 	if err != nil {
 		t.Error("unexpected error", err)

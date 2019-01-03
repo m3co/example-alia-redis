@@ -16,7 +16,7 @@ type Server struct {
 	Close   func() error
 	Accept  func() (net.Conn, error)
 	Listen  func(network, address string) (net.Listener, error)
-	process func(s *Server, message string) error // oh hell no!
+	process func(s *Server, message string) (string, error) // oh hell no!
 
 	store sync.Map
 	reSet *regexp.Regexp

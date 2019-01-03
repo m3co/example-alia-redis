@@ -10,7 +10,7 @@ func Test_Commands_message_set(t *testing.T) {
 	s := Server{}
 	s.init()
 
-	err := s.process(&s, "set key value")
+	_, err := s.process(&s, "set key value")
 	var key interface{} = "key"
 	actual, ok := s.store.Load(key)
 
