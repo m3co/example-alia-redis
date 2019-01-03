@@ -4,6 +4,7 @@ import "errors"
 
 // Start - start the server at addr
 func (s *Server) Start(addr string) error {
+	s.process = process
 	listener, err := s.Listen("tcp", addr)
 	if err != nil {
 		return err

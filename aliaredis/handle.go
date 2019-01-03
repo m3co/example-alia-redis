@@ -12,7 +12,7 @@ func (s *Server) Handle(conn net.Conn) error {
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		message := scanner.Text()
-		if err := s.Process(message); err != nil {
+		if err := s.process(s, message); err != nil {
 			return err
 		}
 	}

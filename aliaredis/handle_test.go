@@ -12,10 +12,10 @@ type dummyTestHandleConn struct {
 	net.Conn
 }
 
-var expectedMessage = "message"
+var expectedMessageTestHandle = "message"
 
 func (d dummyTestHandleConn) Read(s []byte) (int, error) {
-	n := copy(s, expectedMessage)
+	n := copy(s, expectedMessageTestHandle)
 	return n, io.EOF
 }
 
@@ -29,7 +29,7 @@ func Test_Handle_normally(t *testing.T) {
 	s := Server{}
 	actualMessage := ""
 
-	s.Process = func(message string) error {
+	s.process = func(s *Server, message string) error {
 		actualMessage = message
 		return nil
 	}
@@ -40,7 +40,7 @@ func Test_Handle_normally(t *testing.T) {
 	if err != nil {
 		t.Error("unexpected error")
 	}
-	if actualMessage != expectedMessage {
+	if actualMessage != expectedMessageTestHandle {
 		t.Error("Handle is not calling Process method")
 	}
 }
@@ -51,7 +51,7 @@ func Test_Handle_Process_returns_error(t *testing.T) {
 	s := Server{}
 	expectedError := errors.New("expected error")
 
-	s.Process = func(message string) error {
+	s.process = func(s *Server, message string) error {
 		return expectedError
 	}
 

@@ -2,8 +2,8 @@ package aliaredis
 
 import "net"
 
-// errListenerIsNil whatever
 var errListenerIsNil = "nil listener"
+var errMessageInProcessIsNil = "message is empty"
 
 // Server server struct
 type Server struct {
@@ -11,5 +11,5 @@ type Server struct {
 	Close   func() error
 	Accept  func() (net.Conn, error)
 	Listen  func(network, address string) (net.Listener, error)
-	Process func(message string) error
+	process func(s *Server, message string) error // oh hell no!
 }

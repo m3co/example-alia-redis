@@ -1,9 +1,15 @@
 package aliaredis
 
-import "log"
+import (
+	"errors"
+	"log"
+)
 
 // process - handle an incomming connection
-func process(message string) error {
+func process(s *Server, message string) error {
+	if message == "" {
+		return errors.New(errMessageInProcessIsNil)
+	}
 	log.Println("message", message)
 	return nil
 }
