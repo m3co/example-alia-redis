@@ -13,8 +13,7 @@ func process(s *Server, message string) (*response, error) {
 		match := s.reSet.FindStringSubmatch(message)
 		key := match[2]
 		value := match[3]
-		s.set(key, value)
-		return nil, nil
+		return s.set(key, value), nil
 	}
 	if s.reGet.MatchString(message) {
 		match := s.reGet.FindStringSubmatch(message)

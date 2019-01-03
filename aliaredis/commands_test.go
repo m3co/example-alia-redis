@@ -10,7 +10,17 @@ func Test_Commands_message_set(t *testing.T) {
 	s := Server{}
 	s.init()
 
-	_, err := s.process(&s, "set key value")
+	res, err := s.process(&s, "set key value")
+	if res == nil {
+		t.Error("awaiting for a response")
+	}
+	if res.value != "OK" {
+		t.Error("expecting to see OK as result")
+	}
+	if !res.ok {
+		t.Error("expecting to see ok as true")
+	}
+
 	var key interface{} = "key"
 	actual, ok := s.store.Load(key)
 
@@ -33,7 +43,17 @@ func Test_Commands_message_get(t *testing.T) {
 	s.init()
 	s.store.Store("key", "value")
 
-	_, err := s.process(&s, "get key value")
+	res, err := s.process(&s, "get key value")
+	if res == nil {
+		t.Error("awaiting for a response")
+	}
+	if res.value != "value" {
+		t.Error("expecting to see OK as result")
+	}
+	if !res.ok {
+		t.Error("expecting to see ok as true")
+	}
+
 	var key interface{} = "key"
 	actual, ok := s.store.Load(key)
 
