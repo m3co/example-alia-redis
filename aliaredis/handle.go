@@ -15,9 +15,18 @@ func (s *Server) Handle(conn net.Conn) error {
 		message := scanner.Text()
 		response, err := s.process(s, message)
 		if err != nil {
+			log.Printf("%s, closing...", err)
 			return err
 		}
-		log.Println("response:", response)
+		if response == nil {
+			log.Printf("nil")
+		} else {
+			if (*response).value == nil {
+				log.Println("nil")
+			} else {
+				log.Printf("%q", *response.value)
+			}
+		}
 	}
 	return nil
 }
