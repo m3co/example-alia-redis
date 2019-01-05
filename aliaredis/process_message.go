@@ -25,5 +25,8 @@ func process(s *Server, message string) (*response, error) {
 		keys := match[1]
 		return s.del(keys), nil
 	}
+	if s.reEnd.MatchString(message) {
+		return nil, errors.New(errServerEnd)
+	}
 	return nil, errors.New(errMessageInProcessNotMatched)
 }

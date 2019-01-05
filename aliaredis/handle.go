@@ -16,6 +16,9 @@ func (s *Server) Handle(conn net.Conn) error {
 		response, err := s.process(s, message)
 		if err != nil {
 			conn.Write([]byte(fmt.Sprintf("%s, closing...", err)))
+			if fmt.Sprint(err) == errServerEnd {
+				s.Close()
+			}
 			return err
 		}
 		if response == nil {

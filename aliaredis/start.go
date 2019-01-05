@@ -16,6 +16,9 @@ func (s *Server) init() {
 	s.reSet = regexp.MustCompile("^(?i)set ([a-z0-9-]+)(?-i) (.*)")
 	s.reGet = regexp.MustCompile("^(?i)get ([a-z0-9-]+)(?-i)")
 	s.reDel = regexp.MustCompile("^(?i)del ([0-9a-z ]+)(?-i)")
+	s.reEnd = regexp.MustCompile("^(?i)end$(?-i)")
+
+	s.storePath = "./db"
 }
 
 // Start - start the server at addr

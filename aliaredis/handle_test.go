@@ -202,3 +202,51 @@ func Test_Handle_Command_get_nonexisting_key(t *testing.T) {
 		t.Error("expected value differs from actual value")
 	}
 }
+
+// Test_Handle_Command_end
+var actualMessageTestHandleCommandEnd = ""
+
+type dummyTestHandleCommandEndConn struct {
+	net.Conn
+}
+
+func (d dummyTestHandleCommandEndConn) Read(s []byte) (int, error) {
+	n := copy(s, "end")
+	return n, io.EOF
+}
+
+func (d dummyTestHandleCommandEndConn) Write(s []byte) (int, error) {
+	actualMessageTestHandleCommandEnd = fmt.Sprintf("%s", s)
+	return 0, nil
+}
+
+func (d dummyTestHandleCommandEndConn) Close() error {
+	return nil
+}
+
+func Test_Handle_Command_end(t *testing.T) {
+
+	// setup
+	s := Server{}
+	expectedValue := fmt.Sprintf("%s, closing...", errServerEnd)
+	calledClose := false
+	s.init()
+
+	s.Close = func() error {
+		calledClose = true
+		return nil
+	}
+
+	conn := dummyTestHandleCommandEndConn{}
+	err := s.Handle(conn)
+
+	if err == nil {
+		t.Error("unexpected normal execution")
+	}
+	if actualMessageTestHandleCommandEnd != expectedValue {
+		t.Error("expected value differs from actual value")
+	}
+	if !calledClose {
+		t.Error("expected Close function to be called")
+	}
+}

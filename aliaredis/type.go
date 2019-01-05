@@ -6,6 +6,7 @@ import (
 	"sync"
 )
 
+var errServerEnd = "server is going down"
 var errMessageInProcessIsNil = "message is empty"
 var errMessageInProcessNotMatched = "invalid message"
 
@@ -15,16 +16,20 @@ type response struct {
 
 // Server server struct
 type Server struct {
-	port    int
-	mode    string
 	Addr    func() net.Addr
 	Close   func() error
 	Accept  func() (net.Conn, error)
 	Listen  func(network, address string) (net.Listener, error)
 	process func(s *Server, message string) (*response, error) // oh hell no!
 
-	store sync.Map
+	port int
+	mode string
+
+	store     sync.Map
+	storePath string
+
 	reSet *regexp.Regexp
 	reGet *regexp.Regexp
 	reDel *regexp.Regexp
+	reEnd *regexp.Regexp
 }

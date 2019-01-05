@@ -54,3 +54,21 @@ func Test_Process_message_set_OK(t *testing.T) {
 		t.Error("unexpected error", err)
 	}
 }
+
+func Test_Process_message_end(t *testing.T) {
+
+	// setup
+	s := Server{}
+	expectedError := errors.New(errServerEnd)
+	s.init()
+
+	_, err := s.process(&s, "end")
+
+	if err != nil {
+		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
+			t.Errorf("Error should be %v", errServerEnd)
+		}
+	} else {
+		t.Error("unexpected normal execution")
+	}
+}
