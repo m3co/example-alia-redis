@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func parseArgs() (string, int) {
+func parseArgs() (bool, string, int) {
 	// not sure if the following has sense...
 	// out there should be libs that allow to define short and long flags
 
@@ -15,6 +15,8 @@ func parseArgs() (string, int) {
 	modePtr := flag.String("m", "", "-mode")
 	portPtrLong := flag.Int("port", 9090, "port to listen\n")
 	portPtr := flag.Int("p", 0, "-port")
+	verbosePtrLong := flag.Bool("verbose", false, "verbose to listen\n")
+	verbosePtr := flag.Bool("v", false, "-verbose")
 
 	flag.Parse()
 
@@ -22,7 +24,10 @@ func parseArgs() (string, int) {
 	modeLong := *modePtrLong
 	portShort := *portPtr
 	portLong := *portPtrLong
+	verboseShort := *verbosePtr
+	verboseLong := *verbosePtrLong
 
+	var verbose bool
 	var mode string
 	var port int
 
@@ -44,5 +49,12 @@ func parseArgs() (string, int) {
 		}
 	}
 
-	return mode, port
+	if verboseShort == true {
+		verbose = verboseShort
+	}
+	if verboseLong == true {
+		verbose = verboseLong
+	}
+
+	return verbose, mode, port
 }

@@ -26,8 +26,9 @@ type Server struct {
 	Listen  func(network, address string) (net.Listener, error)
 	process func(s *Server, message string) (*response, error) // oh hell no!
 
-	port int
-	mode string
+	verbose bool
+	port    int
+	mode    string
 
 	store     sync.Map
 	storeFile *os.File

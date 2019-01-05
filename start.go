@@ -86,7 +86,8 @@ func (s *Server) Start(addr string) error {
 
 // ListenAndServe whatever
 func (s *Server) ListenAndServe(addr string) error {
-	mode, port := parseArgs()
+	verbose, mode, port := parseArgs()
+	s.verbose = verbose
 	s.mode = mode
 	s.port = port
 
