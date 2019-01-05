@@ -2,9 +2,13 @@ package aliaredis
 
 import (
 	"net"
+	"os"
 	"regexp"
 	"sync"
 )
+
+var modeDisk = "disk"
+var modeMem = "mem"
 
 var errServerEnd = "server is going down"
 var errMessageInProcessIsNil = "message is empty"
@@ -26,7 +30,7 @@ type Server struct {
 	mode string
 
 	store     sync.Map
-	storePath string
+	storeFile *os.File
 
 	reSet *regexp.Regexp
 	reGet *regexp.Regexp

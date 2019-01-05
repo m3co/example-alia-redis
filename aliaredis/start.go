@@ -4,8 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"regexp"
+	"strings"
 )
+
+func (s *Server) commit() {
+	s.store.Range(func(key interface{}, value interface{}) bool {
+		row := fmt.Sprintln(fmt.Sprintf("set %s %s", key.(string), value.(string)))
+		s.storeFile.Write([]byte(row))
+		return true
+	})
+}
 
 func (s *Server) init() {
 	s.process = process
@@ -18,7 +28,41 @@ func (s *Server) init() {
 	s.reDel = regexp.MustCompile("^(?i)del ([0-9a-z ]+)(?-i)")
 	s.reEnd = regexp.MustCompile("^(?i)end$(?-i)")
 
-	s.storePath = "./db"
+	if s.mode == modeDisk {
+		path := fmt.Sprintf("./db_port_%v", s.port)
+		var storeFile *os.File
+		fi, err := os.Stat(path)
+		if err == nil {
+			storeFile, err = os.OpenFile(path, os.O_RDWR|os.O_EXCL, 0600)
+			if err != nil {
+				log.Panicln(err)
+			}
+			dumpBytes := make([]byte, fi.Size())
+			_, err := storeFile.Read(dumpBytes)
+			if err != nil {
+				log.Panic(err)
+			}
+			dump := string(dumpBytes)
+			rows := strings.Split(dump, fmt.Sprintln(""))
+			for _, value := range rows {
+				if value != "" {
+					_, err := s.process(s, value)
+					if err != nil {
+						log.Panic(err)
+					}
+				}
+			}
+		} else if os.IsNotExist(err) {
+			storeFile, err = os.Create(path)
+			if err != nil {
+				log.Panicln(err)
+			}
+		} else {
+			log.Panicln(err)
+		}
+		s.storeFile = storeFile
+		s.storeFile.Seek(0, 0)
+	}
 }
 
 // Start - start the server at addr
@@ -26,6 +70,7 @@ func (s *Server) Start(addr string) error {
 	s.init()
 	listener, err := s.Listen("tcp", addr)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
@@ -49,7 +94,13 @@ func (s *Server) ListenAndServe(addr string) error {
 	if err := s.Start(addrInternal); err != nil {
 		return err
 	}
-	defer s.Close()
+	defer (func() {
+		s.Close()
+		if s.mode == modeDisk {
+			s.commit()
+			s.storeFile.Close()
+		}
+	})()
 
 	log.Printf("server is running on %s\n", s.Addr())
 
