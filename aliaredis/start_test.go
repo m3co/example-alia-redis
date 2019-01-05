@@ -44,7 +44,7 @@ func Test_Serve_Start_send_one_command_and_exit(t *testing.T) {
 	time.Sleep(10 * time.Millisecond)
 
 	expectedRes := fmt.Sprintf("%q", "OK")
-	conn, err := net.Dial("tcp", ":3000")
+	conn, err := net.Dial("tcp", ":9090")
 	if err != nil {
 		t.Error("something went wrong", err)
 		return

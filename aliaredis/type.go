@@ -6,7 +6,6 @@ import (
 	"sync"
 )
 
-var errListenerIsNil = "nil listener"
 var errMessageInProcessIsNil = "message is empty"
 var errMessageInProcessNotMatched = "invalid message"
 
@@ -16,6 +15,8 @@ type response struct {
 
 // Server server struct
 type Server struct {
+	port    int
+	mode    string
 	Addr    func() net.Addr
 	Close   func() error
 	Accept  func() (net.Conn, error)

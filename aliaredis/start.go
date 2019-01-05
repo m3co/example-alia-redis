@@ -1,6 +1,7 @@
 package aliaredis
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"regexp"
@@ -34,7 +35,11 @@ func (s *Server) Start(addr string) error {
 
 // ListenAndServe whatever
 func (s *Server) ListenAndServe(addr string) error {
-	addrInternal := ":3000"
+	mode, port := parseArgs()
+	s.mode = mode
+	s.port = port
+
+	addrInternal := fmt.Sprintf(":%v", s.port)
 	if addr != "" {
 		addrInternal = addr
 	}
