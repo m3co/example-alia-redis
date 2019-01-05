@@ -229,11 +229,11 @@ func Test_Handle_Command_end(t *testing.T) {
 	// setup
 	s := Server{}
 	expectedValue := fmt.Sprintf("%s, closing...", errServerEnd)
-	calledClose := false
+	CloseCalled := false
 	s.init()
 
 	s.Close = func() error {
-		calledClose = true
+		CloseCalled = true
 		return nil
 	}
 
@@ -246,7 +246,7 @@ func Test_Handle_Command_end(t *testing.T) {
 	if actualMessageTestHandleCommandEnd != expectedValue {
 		t.Error("expected value differs from actual value")
 	}
-	if !calledClose {
+	if !CloseCalled {
 		t.Error("expected Close function to be called")
 	}
 }
