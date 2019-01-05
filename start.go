@@ -1,4 +1,4 @@
-package aliaredis
+package main
 
 import (
 	"fmt"
@@ -15,6 +15,18 @@ func (s *Server) commit() {
 		s.storeFile.Write([]byte(row))
 		return true
 	})
+}
+
+func (s *Server) restoreFromString(dump string) {
+	rows := strings.Split(dump, fmt.Sprintln(""))
+	for _, value := range rows {
+		if value != "" {
+			_, err := s.process(s, value)
+			if err != nil {
+				log.Panic(err)
+			}
+		}
+	}
 }
 
 func (s *Server) init() {
@@ -42,16 +54,7 @@ func (s *Server) init() {
 			if err != nil {
 				log.Panic(err)
 			}
-			dump := string(dumpBytes)
-			rows := strings.Split(dump, fmt.Sprintln(""))
-			for _, value := range rows {
-				if value != "" {
-					_, err := s.process(s, value)
-					if err != nil {
-						log.Panic(err)
-					}
-				}
-			}
+			s.restoreFromString(string(dumpBytes))
 		} else if os.IsNotExist(err) {
 			storeFile, err = os.Create(path)
 			if err != nil {

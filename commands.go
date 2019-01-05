@@ -1,4 +1,4 @@
-package aliaredis
+package main
 
 import (
 	"strconv"
