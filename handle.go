@@ -18,8 +18,9 @@ func (s *Server) Handle(conn net.Conn) error {
 			conn.Write([]byte(fmt.Sprintln(err)))
 			if fmt.Sprint(err) == errDisconnectClient {
 				conn.Close()
+				return err
 			}
-			return err
+			continue
 		}
 		if response == nil {
 			conn.Write([]byte(fmt.Sprintln("nil")))

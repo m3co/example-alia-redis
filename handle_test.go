@@ -64,18 +64,10 @@ func Test_Handle_Process_returns_error(t *testing.T) {
 	}
 
 	conn := dummyTestHandleConn{}
-	err := s.Handle(conn)
+	s.Handle(conn)
 
-	if err != nil {
-		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
-			t.Error("Handle is not calling Process method")
-		}
-		if actualMessageTestHandle != fmt.Sprintln(fmt.Sprintf(
-			"%s", fmt.Sprint(expectedError))) {
-			t.Error("Actual error message differs from expected")
-		}
-	} else {
-		t.Error("unexpected normal execution")
+	if actualMessageTestHandle != fmt.Sprintln(fmt.Sprint(expectedError)) {
+		t.Error("Actual error message differs from expected")
 	}
 }
 
