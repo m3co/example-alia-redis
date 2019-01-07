@@ -8,7 +8,7 @@ import (
 )
 
 var modeDisk = "disk"
-var modeMem = "mem"
+var modeMem = "memory"
 
 var errDisconnectClient = "bye"
 var errMessageInProcessIsNil = "message is empty"

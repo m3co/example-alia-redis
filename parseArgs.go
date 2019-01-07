@@ -11,7 +11,7 @@ func parseArgs() (bool, string, int) {
 
 	// I'm not going to test this function
 
-	modePtrLong := flag.String("mode", "mem", "mem - write into memory\ndisk - write into disk\n")
+	modePtrLong := flag.String("mode", "memory", "memory - write into memory\ndisk - write into disk\n")
 	modePtr := flag.String("m", "", "-mode")
 	portPtrLong := flag.Int("port", 9090, "port to listen\n")
 	portPtr := flag.Int("p", 0, "-port")
@@ -35,7 +35,7 @@ func parseArgs() (bool, string, int) {
 		mode = modeLong
 	} else {
 		mode = modeShort
-		if modeLong != "mem" {
+		if modeLong != "memory" {
 			log.Panicln("--mode and -m defined. Use only one value")
 		}
 	}
