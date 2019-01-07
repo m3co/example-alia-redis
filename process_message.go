@@ -23,7 +23,7 @@ func process(s *Server, message string) (*response, error) {
 	if s.reDel.MatchString(message) {
 		match := s.reDel.FindStringSubmatch(message)
 		keys := match[1]
-		return s.del(keys), nil
+		return nil, errors.New(*s.del(keys).value)
 	}
 	if s.reEnd.MatchString(message) {
 		return nil, errors.New(errDisconnectClient)

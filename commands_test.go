@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -91,14 +92,12 @@ func Test_Commands_message_Delete_OK(t *testing.T) {
 	s.store.Store("key3", "value3")
 
 	res, err := s.process(&s, "del key1 key2 key3")
-	if res == nil {
-		t.Error("awaiting for a response")
+	if res != nil {
+		t.Error("awaiting for an 'error'")
 	}
-	// no matter, after all the client will see an string
-	if *res.value != "3" {
+
+	// it's a bit strange, but the result of deletion is an error
+	if fmt.Sprint(err) != "3" {
 		t.Error("expecting to see 3 as result")
-	}
-	if err != nil {
-		t.Error("unexpected error", err)
 	}
 }
