@@ -55,18 +55,18 @@ func Test_Process_message_set_OK(t *testing.T) {
 	}
 }
 
-func Test_Process_message_end(t *testing.T) {
+func Test_Process_message_bye(t *testing.T) {
 
 	// setup
 	s := Server{}
-	expectedError := errors.New(errServerEnd)
+	expectedError := errors.New(errDisconnectClient)
 	s.init()
 
-	_, err := s.process(&s, "end")
+	_, err := s.process(&s, "bye")
 
 	if err != nil {
 		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
-			t.Errorf("Error should be %v", errServerEnd)
+			t.Errorf("Error should be %v", errDisconnectClient)
 		}
 	} else {
 		t.Error("unexpected normal execution")

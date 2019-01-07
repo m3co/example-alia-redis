@@ -15,19 +15,19 @@ func (s *Server) Handle(conn net.Conn) error {
 		message := scanner.Text()
 		response, err := s.process(s, message)
 		if err != nil {
-			conn.Write([]byte(fmt.Sprintf("%s, closing...", err)))
-			if fmt.Sprint(err) == errServerEnd {
-				s.Close()
+			conn.Write([]byte(fmt.Sprintln(err)))
+			if fmt.Sprint(err) == errDisconnectClient {
+				conn.Close()
 			}
 			return err
 		}
 		if response == nil {
-			conn.Write([]byte("nil"))
+			conn.Write([]byte(fmt.Sprintln("nil")))
 		} else {
 			if (*response).value == nil {
-				conn.Write([]byte("nil"))
+				conn.Write([]byte(fmt.Sprintln("nil")))
 			} else {
-				conn.Write([]byte(fmt.Sprintf("%q", *response.value)))
+				conn.Write([]byte(fmt.Sprintln(fmt.Sprintf("%q", *response.value))))
 			}
 		}
 	}

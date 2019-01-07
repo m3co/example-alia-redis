@@ -48,7 +48,7 @@ func Test_Handle_normally(t *testing.T) {
 	if actualMessage != expectedMessageTestHandle {
 		t.Error("Handle is not calling Process method")
 	}
-	if actualMessageTestHandle != "nil" {
+	if actualMessageTestHandle != fmt.Sprintln("nil") {
 		t.Error("unexpected error")
 	}
 }
@@ -70,8 +70,8 @@ func Test_Handle_Process_returns_error(t *testing.T) {
 		if fmt.Sprint(err) != fmt.Sprint(expectedError) {
 			t.Error("Handle is not calling Process method")
 		}
-		if actualMessageTestHandle != fmt.Sprintf(
-			"%s, closing...", fmt.Sprint(expectedError)) {
+		if actualMessageTestHandle != fmt.Sprintln(fmt.Sprintf(
+			"%s", fmt.Sprint(expectedError))) {
 			t.Error("Actual error message differs from expected")
 		}
 	} else {
@@ -114,7 +114,8 @@ func Test_Handle_Command_get(t *testing.T) {
 	if err != nil {
 		t.Error("unexpected error")
 	}
-	if actualMessageTestHandleCommandGet != fmt.Sprintf("%q", expectedValue) {
+	if actualMessageTestHandleCommandGet != fmt.Sprintln(
+		fmt.Sprintf("%q", expectedValue)) {
 		t.Error("expected value differs from actual value")
 	}
 }
@@ -189,7 +190,7 @@ func Test_Handle_Command_get_nonexisting_key(t *testing.T) {
 
 	// setup
 	s := Server{}
-	expectedValue := "nil"
+	expectedValue := fmt.Sprintln("nil")
 	s.init()
 
 	conn := dummyTestHandleCommandGetNonexistingKeyConn{}
@@ -205,13 +206,14 @@ func Test_Handle_Command_get_nonexisting_key(t *testing.T) {
 
 // Test_Handle_Command_end
 var actualMessageTestHandleCommandEnd = ""
+var closeConnectionTestHandleCommandEnd = false
 
 type dummyTestHandleCommandEndConn struct {
 	net.Conn
 }
 
 func (d dummyTestHandleCommandEndConn) Read(s []byte) (int, error) {
-	n := copy(s, "end")
+	n := copy(s, "bye")
 	return n, io.EOF
 }
 
@@ -221,6 +223,7 @@ func (d dummyTestHandleCommandEndConn) Write(s []byte) (int, error) {
 }
 
 func (d dummyTestHandleCommandEndConn) Close() error {
+	closeConnectionTestHandleCommandEnd = true
 	return nil
 }
 
@@ -228,14 +231,8 @@ func Test_Handle_Command_end(t *testing.T) {
 
 	// setup
 	s := Server{}
-	expectedValue := fmt.Sprintf("%s, closing...", errServerEnd)
-	CloseCalled := false
+	expectedValue := fmt.Sprintln(errDisconnectClient)
 	s.init()
-
-	s.Close = func() error {
-		CloseCalled = true
-		return nil
-	}
 
 	conn := dummyTestHandleCommandEndConn{}
 	err := s.Handle(conn)
@@ -246,7 +243,7 @@ func Test_Handle_Command_end(t *testing.T) {
 	if actualMessageTestHandleCommandEnd != expectedValue {
 		t.Error("expected value differs from actual value")
 	}
-	if !CloseCalled {
+	if !closeConnectionTestHandleCommandEnd {
 		t.Error("expected Close function to be called")
 	}
 }

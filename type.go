@@ -10,7 +10,7 @@ import (
 var modeDisk = "disk"
 var modeMem = "mem"
 
-var errServerEnd = "server is going down"
+var errDisconnectClient = "bye"
 var errMessageInProcessIsNil = "message is empty"
 var errMessageInProcessNotMatched = "invalid message"
 
